@@ -1,14 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView, CreateView, DeleteView, UpdateView
-from django.shortcuts import get_object_or_404
-
 from .filters import PostFilter
 from .forms import PostForm
 from .models import *
+from django.shortcuts import render, get_object_or_404
 
 class PostList(ListView):
     model = Post
@@ -91,3 +89,51 @@ class AuthorCreateView(CreateView):
     model = Author
     fields = ['name']
     template_name = 'author_form.html'
+
+
+class CategoryListView(ListView):
+     model = Post
+     template_name = 'newapp/category_list.html'
+     context_object_name = 'category_news_list'
+
+     def get_queryset(self):
+         self.category = get_object_or_404(Category, id=self.kwargs['pk'])
+         queryset = Post.objects.filter(postCategory=self.category).order_by('dateCreation')
+         return  queryset
+
+     def get_context_data(self, **kwargs):
+         context = super().get_context_data(**kwargs)
+         context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
+         context['category'] = self.category
+         return context
+
+
+from .models import Subscriber
+
+
+# BEGIN subscriptions
+def subscriptions(request, category_id):
+    category = get_object_or_404(PostCategory, id=category_id)
+
+    user = request.user
+
+    subscriber_list = Subscriber.objects.filter(
+    user = user,
+    category = category,
+    )
+    # отписка
+    if subscriber_list:
+        subscriber_list.delete()
+
+        message_text = 'Вы успешно отписались'
+    # подиска
+    else:
+        subscriber = Subscriber()
+        subscriber.user = user
+        subscriber.category = category
+        subscriber.save()
+
+        message_text = 'Подписка оформлена'
+
+    return render(request, 'newapp/sub.html', {'message_text':message_text,})
+# END subscriptions

@@ -31,6 +31,8 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
+    subscribers = models.ManyToManyField(User, related_name='categories')
+
 
     def __str__(self):
         return f'{self.name}'
@@ -77,6 +79,9 @@ class PostCategory(models.Model):
     postThrough = models.ForeignKey(Post, on_delete=models.CASCADE)
     categoryThrough = models.ForeignKey(Category, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'{self.post.title} | {self.category.name}'
+
 
 class Comment(models.Model):
     commentPost = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -93,4 +98,23 @@ class Comment(models.Model):
         self.rating -= 1
         self.save()
 
+
+# BEGIN Subscriber
+class Subscriber(models.Model):
+    user = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.CASCADE,
+    )
+    category = models.ForeignKey(
+        PostCategory,
+        verbose_name='Категория',
+        on_delete=models.CASCADE,
+    )
+
+    create = models.DateTimeField(
+        'Дата создания',
+        auto_now=True,
+    )
+# END Subscriber
 

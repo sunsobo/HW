@@ -1,0 +1,11 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Subscrition
+{% endblock title %}
+
+{% block content %}
+    {{ message_text }}
+    <a href="{% url 'post_list' %}">Назад к новостям</a>
+{% endblock content %}
+
