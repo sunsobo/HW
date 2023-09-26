@@ -1,18 +1,21 @@
 import logging
+
 from django.conf import settings
+
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django.core.management.base import BaseCommand
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 from django_apscheduler import util
-from ...tasks import send_email_task
+
+logger = logging.getLogger(__name__)
+
 from ...models import Post, Subscriber, PostCategory
 from ...send_email import send_email
 from django.utils import timezone
 from datetime import datetime, timedelta
 
-logger = logging.getLogger(__name__)
 
 def my_job():
     category_list = PostCategory.objects.all()
@@ -49,12 +52,9 @@ def my_job():
             str_title = text_base.replace('{title}', str(post.title))
             text_html += str_title.replace('{post_id}', str(post.id))
 
-        email_list = []
         for s in subscriber_list:
             to_email = s.user.email
-            # send_email(text_html, to_email)
-            email_list.append(to_email)
-        send_email_task.delay(text_html, email_list)
+            send_email(text_html, to_email)
     pass
 
 
@@ -93,8 +93,8 @@ class Command(BaseCommand):
         scheduler.add_job(
             delete_old_job_executions,
             trigger=CronTrigger(
-                day_of_week="mon", hour="8", minute="00"
-            ),  # В понед. 8:00
+                day_of_week="fri", hour="18", minute="00"
+            ),  # В пятницу 18:00, через каждую неделю.
             id="delete_old_job_executions",
             max_instances=1,
             replace_existing=True,
