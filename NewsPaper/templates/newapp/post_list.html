@@ -23,13 +23,17 @@ News
                <td> <b>Текст</b> </td>
                <td> <b>Категория</b> </td>
            </tr>
+           {% load cache %}
            {% for post in Posts %}
-           <tr>
-               <td>{{ post.title|censor }}</td>
-               <td>{{ post.dateCreation|date:'d M Y' }}</td>
-               <td>{{ post.text|censor|truncatewords:20 }}</td>
-               <td>{{ post.categoryType }}</td>
-           </tr>
+                <!-- 5 мин -->
+                {% cache 300 news post.id %}
+                <tr>
+                    <td>{{ post.title|censor }}</td>
+                    <td>{{ post.dateCreation|date:'d M Y' }}</td>
+                    <td>{{ post.text|censor|truncatewords:20 }}</td>
+                    <td>{{ post.categoryType }}</td>
+                </tr>
+                {% endcache %}
            {% endfor %}
 
        </table>

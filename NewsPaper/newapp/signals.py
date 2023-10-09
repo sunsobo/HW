@@ -46,6 +46,11 @@ def save_post(sender, instance, **kwargs):
             email_list.append(to_email)
         text_base = '''
         Вышел новый пост <br>
-	    '''
+	'''
         text_html = text_base.replace('{post_id}', str(instance.id))
         send_email_task.delay(text_html, email_list)
+
+        # удаление из кэша при изменении поста
+        # cache key for {% cache 300 news post.id %}
+        key = make_template_fragment_key('news', [instance.id])
+        cache.delete(key)
