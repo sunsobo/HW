@@ -5,6 +5,8 @@ from .models import Post, Subscriber
 
 from .send_email import send_email
 from .tasks import send_email_task
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 
 # send_email_task.delay(text_html, to_email)
 # Метод delay() используется в связке с Celery

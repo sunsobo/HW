@@ -1,0 +1,10 @@
+{% extends 'flatpages/default.html' %}
+
+
+{% block content %}
+    {% load cache %}
+    <!-- 1 мин -->
+    {% cache 60 home %}
+        <h1>Добро пожаловать на Главную!</h1>
+    {% endcache %}
+{% endblock %}
