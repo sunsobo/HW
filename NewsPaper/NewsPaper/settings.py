@@ -185,3 +185,193 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Europe/Moscow'
+
+
+SERVER_EMAIL = 'koder.s@yandex.ru'
+DEFAULT_FROM_EMAIL = 'koder.s@yandex.ru'
+
+
+EMAIL_FILE_PATH = 'email-messages'
+
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        # "format":
+        # "{name} {levelname} {asctime} {module} {process:d} {thread:d} {message}"
+
+        # 'console': {
+        #     'format': '%(name)-12s %(levelname)-8s %(message)s'
+        # },
+        'console_1': {
+            'format': '%(name)-12s %(levelname)-8s %(pathname)-4s %(message)s'
+        },
+        'console_2': {
+            'format': '%(name)-12s %(levelname)-8s %(message)s'
+        },
+        'console_3': {
+            'format': '%(name)-12s %(levelname)-8s %(pathname)-4s %(sexc_info)-2 %(message)s'
+        },
+
+
+        'file': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        },
+        'file_general': {
+            'format': '%(asctime)s %(levelname)-12s %(module)-8s %(message)s'
+        },
+        'file_errors': {
+            'format': '%(asctime)s %(levelname)-12s %(message)-10s %(pathname)-8s %(stack_info)s'
+        },
+        'file_security': {
+            'format': '%(asctime)s %(levelname)-12s %(module)-8s %(message)s'
+        },
+        'file_email': {
+            'format': '%(asctime)s %(levelname)-12s %(message)-8s %(pathname)-s'
+        },
+
+    },
+
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+
+    'handlers': {
+        # console
+        'console_1': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_1',
+        },
+        'console_2': {
+            'level': 'WARNING',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_2',
+        },
+        'console_3': {
+            'level': 'ERROR',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_3',
+        },
+        'console_4': {
+            'level': 'CRITICAL',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_3',
+        },
+
+
+        # 'file': {
+        #     'level': 'DEBUG',
+        #     'filters': ['require_debug_false'],
+        #     'class': 'logging.FileHandler',
+        #     'formatter': 'file',
+        #     'filename': 'debug.log'
+        # },
+
+
+        # general
+        'file_general': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'formatter': 'file_general',
+            'filename': '_general.log_'
+        },
+
+
+        # errors
+        'file_errors_1': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '_errors.log_'
+        },
+        'file_errors_2': {
+            'level': 'CRITICAL',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '_errors.log_'
+        },
+
+
+        # security
+        'file_security': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '_security.log_'
+        },
+
+
+        'mail_admins': {
+            'level': 'ERROR',
+            # отправка только, когда DEBUG=False
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'file_email',
+            'include_html': True,
+        },
+    },
+
+    'loggers': {
+        # '': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['console', 'file']
+        # },
+
+
+
+        # general
+        'django': {
+            'level': 'DEBUG',
+            'handlers': [
+                'console_1',
+                'console_2',
+                'console_3',
+                'console_4',
+                'file_general'
+            ],
+        },
+
+
+        # errors
+        'django.request': {
+            'level': 'DEBUG',
+            'handlers': ['file_errors_1', 'file_errors_2', 'mail_admins'],
+        },
+        'django.server': {
+            'level': 'DEBUG',
+            'handlers': ['file_errors_1', 'file_errors_2', 'mail_admins'],
+        },
+        'django.template': {
+            'level': 'DEBUG',
+            'handlers': ['file_errors_1', 'file_errors_2'],
+        },
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['file_errors_1', 'file_errors_2'],
+        },
+
+
+        # security
+        'django.security': {
+            'level': 'DEBUG',
+            'handlers': ['file_security'],
+        },
+    },
+}
