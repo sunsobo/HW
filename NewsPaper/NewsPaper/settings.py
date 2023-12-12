@@ -195,31 +195,25 @@ EMAIL_FILE_PATH = 'email-messages'
 
 
 
+# LOGGING
+ADMINS = [("Admin", "sunsobolev@gmail.com"), ]
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
 
     'formatters': {
-        # "format":
-        # "{name} {levelname} {asctime} {module} {process:d} {thread:d} {message}"
-
-        # 'console': {
-        #     'format': '%(name)-12s %(levelname)-8s %(message)s'
-        # },
         'console_1': {
-            'format': '%(name)-12s %(levelname)-8s %(pathname)-4s %(message)s'
+            'format': '%(asctime)s-12s %(levelname)-4s %(message)s'
         },
         'console_2': {
-            'format': '%(name)-12s %(levelname)-8s %(message)s'
+            'format': '%(asctime)s-12s %(levelname)-8s %(pathname)-4s %(message)s'
         },
         'console_3': {
-            'format': '%(name)-12s %(levelname)-8s %(pathname)-4s %(sexc_info)-2 %(message)s'
+            'format': '%(asctime)s-12s %(levelname)-8s %(pathname)-4s %(exc_info)-2s %(message)s'
         },
 
 
-        'file': {
-            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
-        },
         'file_general': {
             'format': '%(asctime)s %(levelname)-12s %(module)-8s %(message)s'
         },
@@ -271,50 +265,37 @@ LOGGING = {
             'formatter': 'console_3',
         },
 
-
-        # 'file': {
-        #     'level': 'DEBUG',
-        #     'filters': ['require_debug_false'],
-        #     'class': 'logging.FileHandler',
-        #     'formatter': 'file',
-        #     'filename': 'debug.log'
-        # },
-
-
         # general
         'file_general': {
             'level': 'INFO',
             'filters': ['require_debug_false'],
             'class': 'logging.FileHandler',
             'formatter': 'file_general',
-            'filename': '_general.log_'
+            'filename': '../_general.log_'
         },
 
 
         # errors
         'file_errors_1': {
             'level': 'ERROR',
-            'filters': ['require_debug_false'],
             'class': 'logging.FileHandler',
-            'formatter': 'file',
-            'filename': '_errors.log_'
+            'formatter': 'file_errors',
+            'filename': '../_errors.log_'
         },
         'file_errors_2': {
             'level': 'CRITICAL',
-            'filters': ['require_debug_false'],
             'class': 'logging.FileHandler',
-            'formatter': 'file',
-            'filename': '_errors.log_'
+            'formatter': 'file_errors',
+            'filename': '../_errors.log_'
         },
 
 
         # security
         'file_security': {
             'level': 'DEBUG',
-            'filters': ['require_debug_false'],
             'class': 'logging.FileHandler',
-            'formatter': 'file',
-            'filename': '_security.log_'
+            'formatter': 'file_security',
+            'filename': '../_security.log_'
         },
 
 
@@ -329,13 +310,6 @@ LOGGING = {
     },
 
     'loggers': {
-        # '': {
-        #     'level': 'DEBUG',
-        #     'handlers': ['console', 'file']
-        # },
-
-
-
         # general
         'django': {
             'level': 'DEBUG',
